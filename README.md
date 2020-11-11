@@ -34,8 +34,8 @@ V5 :
 ----------------------------------------------------------------------------------------------------------
 V6 / Stats :
  - Correction du programme vis à vis de la nouvelle feuille de donnée
- -
- Création de toutes les fonctions statistique (maximum ,minimum,  somme, moyenne, ecart-type, covariance, variance , etendue)
+ - Création de toutes les fonctions statistique (maximum ,minimum,  somme, moyenne, ecart-type, covariance, variance , etendue)
+ 
  
  
  
