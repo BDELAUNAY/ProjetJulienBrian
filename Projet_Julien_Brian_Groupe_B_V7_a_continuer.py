@@ -298,3 +298,5 @@ for k in range (len(liste_donnee_moy)) :
     liste_cap[-1][k].append(liste_donnee_moy[k])
 
 graph(4,True,False)
+
+"""test"""
