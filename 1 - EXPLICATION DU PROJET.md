@@ -39,7 +39,6 @@ V6 / Stats :
 ----------------------------------------------------------------------------------------------------------
 V7 / Stats 2 : 
  - création de l'indice de la fonction indice de corrélation 
- - salut c'est moi
 
  
  
