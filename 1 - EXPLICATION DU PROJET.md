@@ -37,6 +37,9 @@ V6 / Stats :
  - Correction du programme vis à vis de la nouvelle feuille de donnée
  - Création de toutes les fonctions statistique (maximum ,minimum,  somme, moyenne, ecart-type, covariance, variance , etendue)
 
+V7 / Stats 2 : 
+ - création de l'indice de la fonction indice de corrélation 
+
  
  
  
