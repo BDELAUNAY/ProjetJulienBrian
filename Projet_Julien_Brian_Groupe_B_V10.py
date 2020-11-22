@@ -317,7 +317,6 @@ def lab(bol_tous,donnee):
     return lab
 
 def graph() :
-    plt.xlabel('Temps en demi-journée')
     if bol_intervalle :
         liste_int = liste_intervalle()
         for id_donnee in liste_etude_donnee : 
@@ -328,6 +327,7 @@ def graph() :
                     plt.ylabel(lab(False,id_donnee))
                     plt.legend(loc='upper left')
                     plt.xlim(0,40)
+                    plt.xlabel('Temps en demi-journée')
                     plt.show()
             if bol_init_moy :
                 plt.plot(liste_int[-1][-1][2],liste_int[-1][id_donnee][2], color = liste_color[-1], label = liste_int[-1][id_donnee][0])
@@ -336,12 +336,14 @@ def graph() :
                     plt.ylabel(lab(False,id_donnee))
                     plt.legend(loc='upper left')
                     plt.xlim(0,40)
+                    plt.xlabel('Temps en demi-journée')
                     plt.show()
             if bol_diff == False :
                 plt.title(titre(True,0,id_donnee))
                 plt.ylabel(lab(True,id_donnee))
                 plt.legend(loc='upper left')
                 plt.xlim(0,40)
+                plt.xlabel('Temps en demi-journée')
                 plt.show()
     else :
         for id_donnee in liste_etude_donnee : 
@@ -352,6 +354,7 @@ def graph() :
                     plt.ylabel(lab(False,id_donnee))
                     plt.legend(loc='upper left')
                     plt.xlim(0,40)
+                    plt.xlabel('Temps en demi-journée')
                     plt.show()
             if bol_init_moy :
                 plt.plot(liste_cap[-1][-1][2],liste_cap[-1][id_donnee][2], color = liste_color[-1], label = liste_cap[-1][id_donnee][0])
@@ -360,12 +363,14 @@ def graph() :
                     plt.ylabel(lab(False,id_donnee))
                     plt.legend(loc='upper left')
                     plt.xlim(0,40)
+                    plt.xlabel('Temps en demi-journée')
                     plt.show()
             if bol_diff == False :
                 plt.title(titre(True,0,id_donnee))
                 plt.ylabel(lab(True,id_donnee))
                 plt.legend(loc='upper right')
                 plt.xlim(0,40)
+                plt.xlabel('Temps en demi-journée')
                 plt.show()
 
 """ Enregistrement des données dans les listes en vue de faire apparaître les différentes données et diagrammes """
