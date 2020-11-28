@@ -28,15 +28,19 @@ import matplotlib.patches as pt
 """ Stats sans les weekends ? """
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 liste_etude_cap = []
 liste_etude_donnee = []
 cap_date_inter = []
 
-def fct(liste):
+def start(liste):
     if liste[1] == 'display' :
         graph()
     elif liste[1] == 'displayStat' :
-        print() 
+        tab=[["Numéro du capteur","Moyenne","Variance","Ecart-type","Minimum","Médiane","Maximum","Etendue"],["kate","lyne","22","1","1","1","1","1","1"],["sara","parker","78","1","1","1","1","1"]]
+        form="{0:20}{1:10}{2:10}{3:10}{4:10}{5:10}{6:10}{7:10}"
+        for val in tab:
+            print(form.format(*val))
     elif liste[1] == 'corrélation' :
         print()
 
@@ -565,5 +569,4 @@ graph()
 print(indice_correlation(liste_cap[5][0][2], liste_cap[1][0][2]))
 
 
-
-fct(sys.argv)
+# start(sys.argv)
