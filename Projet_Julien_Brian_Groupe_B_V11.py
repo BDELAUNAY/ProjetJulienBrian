@@ -569,4 +569,4 @@ graph()
 print(indice_correlation(liste_cap[5][0][2], liste_cap[1][0][2]))
 
 
-# start(sys.argv)
+start(sys.argv)
