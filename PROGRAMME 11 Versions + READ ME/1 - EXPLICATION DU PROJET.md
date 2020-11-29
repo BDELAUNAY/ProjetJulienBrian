@@ -22,7 +22,7 @@ V4 :
  - Fonction graph qui affiche les courbes une par une ou toute en même temps suivant un booléen et la moyenne ou non aussi avec un booléen
  
  *** problème 2 : capteur 5 : ligne droite dans l'affichage des courbes: identifier pourquoi ? 
-
+----------------------------------------------------------------------------------------------------------
  *** Problème 3 : capteur 1 : Décalage pour rapport à tous
 ----------------------------------------------------------------------------------------------------------
 V5 : 
