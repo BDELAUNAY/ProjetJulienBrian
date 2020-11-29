@@ -21,9 +21,9 @@ V4 :
  - Optimisation : création d'une liste possédant toutes les données, et chaînes de caractères destinées à l'affichage
  - Fonction graph qui affiche les courbes une par une ou toute en même temps suivant un booléen et la moyenne ou non aussi avec un booléen
  
- *** problème 2 : capteur 5 : ligne droite dans l'affichage des courbes: identifier pourquoi ? 
+ *** problème 2 : capteur 5 : ligne droite dans l'affichage des courbes: identifier d'où vient le problème. 
 ----------------------------------------------------------------------------------------------------------
- *** Problème 3 : capteur 1 : Décalage pour rapport à tous
+ *** Problème 3 : capteur 1 : Décalage par rapport à tous
 ----------------------------------------------------------------------------------------------------------
 V5 : 
  - Identification du problème 2 : Le capteur 5 s'arrête et reprend plus tard, d'où le "saut"
