@@ -9,5 +9,9 @@ def indice_variable (mot):
         return 3
     elif mot == "C02":
         return 4 
-    elif mot == "Indice humidex":
+    elif mot == "humidex":
         return 5
+    else : 
+        raise NameError ("Veuillez chosir entre c'est 6 variable: Bruit, Température, Humidité, Luminosité, CO2, Humidex")
+
+print (indice_variable("c'est beau"))
