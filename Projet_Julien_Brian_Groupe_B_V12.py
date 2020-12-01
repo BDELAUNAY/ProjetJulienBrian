@@ -70,16 +70,16 @@ def start():
             bol_intervalle = False
             date1,date2 = '',''
         id_donnee = indice_variable(sys.argv[2])
+        bol_log = (0 == id_donnee)
         tab=[["Numéro du capteur","Moyenne","Variance","Ecart-type","Minimum","Médiane","Maximum","Etendue"]]
         print(liste_cap[0][id_donnee][0] + ' : ')
         for idd in range(6):
-            tab.append([str(idd+1),str(moyenne(liste_cap[idd][id_donnee][2])),str(variance(liste_cap[idd][id_donnee][2])),str(ecart_type(liste_cap[idd][id_donnee][2])),str(minimum(liste_cap[idd][id_donnee][2])[0]),str(mediane(liste_cap[idd][id_donnee][2])),str(maximum(liste_cap[idd][id_donnee][2])[0]),str(etendue(liste_cap[idd][id_donnee][2]))])
+            tab.append([str(idd+1),str(moyenne(liste_cap[idd][id_donnee][2],bol_log)),str(variance(liste_cap[idd][id_donnee][2],bol_log)),str(ecart_type(liste_cap[idd][id_donnee][2],bol_log)),str(minimum(liste_cap[idd][id_donnee][2])[0]),str(mediane(tri(liste_cap[idd][id_donnee][2]))),str(maximum(liste_cap[idd][id_donnee][2])[0]),str(etendue(liste_cap[idd][id_donnee][2]))])
         form="{0:20}{1:10}{2:12}{3:12}{4:10}{5:10}{6:10}{7:10}"
         for val in tab:
             print(form.format(*val))
     elif sys.argv[1] == 'corrélation' :
         liste_etude_donnee = [indice_variable(sys.argv[2]),indice_variable(sys.argv[3])]
-        print(liste_etude_donnee)
         if n > 4 :
             erreur_date(sys.argv[4],sys.argv[5])
             bol_intervalle = True
@@ -87,7 +87,6 @@ def start():
         else :
             bol_intervalle = False
             date1,date2 = '',''
-        print('yes')
         graph_corr(6,True,2,bol_intervalle,date1,date2,False,False,True,[0,1,2,3,4,5],liste_etude_donnee,cap_date_inter)
     elif sys.argv[1] == 'autre' :
         if n > 2 :
@@ -127,10 +126,11 @@ def start():
             bol_diff = False
         if bol_stats :
             for id_donnee in liste_etude_donnee :
+                bol_log = (0 == id_donnee)
                 print(liste_cap[0][id_donnee][0] + ' : ')
                 tab=[["Numéro du capteur","Moyenne","Variance","Ecart-type","Minimum","Médiane","Maximum","Etendue"]]
                 for idd in range(6):
-                    tab.append([str(idd+1),str(moyenne(liste_cap[idd][id_donnee][2])),str(variance(liste_cap[idd][id_donnee][2])),str(ecart_type(liste_cap[idd][id_donnee][2])),str(minimum(liste_cap[idd][id_donnee][2])[0]),str(mediane(liste_cap[idd][id_donnee][2])),str(maximum(liste_cap[idd][id_donnee][2])[0]),str(etendue(liste_cap[idd][id_donnee][2]))])
+                    tab.append([str(idd+1),str(moyenne(liste_cap[idd][id_donnee][2],bol_log)),str(variance(liste_cap[idd][id_donnee][2],bol_log)),str(ecart_type(liste_cap[idd][id_donnee][2],bol_log)),str(minimum(liste_cap[idd][id_donnee][2])[0]),str(mediane(tri(liste_cap[idd][id_donnee][2]))),str(maximum(liste_cap[idd][id_donnee][2])[0]),str(etendue(liste_cap[idd][id_donnee][2]))])
                 form="{0:20}{1:10}{2:12}{3:12}{4:10}{5:10}{6:10}{7:10}"
                 for val in tab:
                     print(form.format(*val))
@@ -154,34 +154,16 @@ def start():
         plt.legend()
         plt.title("Périodes d'occupation des bureaux")
 
-        plt.show()
+        plt.show()           
+
+def indice_variable (mot):
+    for id in range(6):
+        if mot == liste_cap[0][id][0] :
+            return id
+    else : 
+        raise NameError ("Veuillez chosir entre ces 6 variables  : Bruit, Température, Humidité, Luminosité, CO2, Humidex")
 
 """ Fonction pour définir la période d'étude """
-
-def occupation(bol_intervalle,date1,date2,bol_tps):
-    if bol_intervalle :
-        liste_date = date_intervalle(date1,date2)
-        liste = liste_intervalle(date1, date2, [0,1,2,3,4,5], [0,1,2,3,4,5], liste_date, False).copy()
-    else :
-        liste_date = cap_date[5].copy()
-        liste = liste_cap.copy()
-    occup = [[],[]]
-    for i in range(len(liste_date)):
-        if bol_tps :
-            occup[0].append(liste_date[i][0])
-        else :
-            occup[0].append(liste[6][-1][2][i])
-        if i != len(liste_date)-1 and i != 0 :
-            if liste[6][0][2][i] <= 35.5 and (liste[6][0][2][i+1] < 35.5 or liste[6][0][2][i-1] < 35.5) :
-                occup[1].append(0)
-            else :
-                occup[1].append(1)
-        else :
-            if liste[6][0][2][i] <= 35.5 :
-                occup[1].append(0)
-            else :
-                occup[1].append(1)
-    return(occup)            
 
 def indices_intervalle(date1,date2) : # Identifie les indices correspondant à l'intervalle demandé
     tps_debut,tps_fin = distance_temporelle(date1)/3600/12,distance_temporelle(date2)/3600/12
@@ -236,22 +218,29 @@ def date_intervalle(date1,date2) :
 
 # Tri fusion nécessaire aux analyses statistiques et autre tri
 
-def fusion(T1,T2) :
-    if T1==[] :
-        return T2
-    if T2==[] :
-        return T1
-    if T1[0]<T2[0] :
-        return [T1[0]]+fusion(T1[1 :],T2)
-    else :
-        return [T2[0]]+fusion(T1,T2[1 :])
+def fusion(L1,L2):
+    i,j = 0,0
+    n1,n2=len(L1),len(L2)
+    L = []
+    while i < n1 and j < n2 :
+        if L1[i] < L2[j]:
+            L.append(L1[i])
+            i+=1
+        else:
+            L.append(L2[j])
+            j+=1
+    if i == n1:
+        L.extend(L2[j:])
+    else:
+        L.extend(L1[i:])
+    return L
 
-def trifusion(T) : # Tri en ordre croissant
-    if len(T)<=1 : 
-        return T
-    T1=[T[x] for x in range(len(T)//2)]
-    T2=[T[x] for x in range(len(T)//2,len(T))]
-    return fusion(trifusion(T1),trifusion(T2))
+def trifusion(L):
+    n = len(L)
+    if n < 2:
+        return L
+    else:
+        return fusion(trifusion(L[:n//2]),trifusion(L[n//2:]))
 
 def pop_None(T): # Retire les None d'une liste 
     liste = []
@@ -264,13 +253,7 @@ def tri(T): # Tri une liste afin d'analyser correctement les données
     liste = pop_None(T)
     return(trifusion(liste))
 
-# CONVERSION DES LIGNES EN LISTE ET CONVERSION TEMPORELLE
-def indice_variable (mot):
-    for id in range(6):
-        if mot == liste_cap[0][id][0] :
-            return id
-    else : 
-        raise NameError ("Veuillez chosir entre ces 6 variables  : Bruit, Température, Humidité, Luminosité, CO2, Humidex")
+# CONVERSION DES CHAINES DE CARACTERES EN LISTE ET CONVERSION TEMPORELLE
 
 def saut_first_col(l) : # Prend en argument une chaîne de caractère composée d'un ';'
     m = 0
@@ -304,21 +287,18 @@ def distance_temporelle(d): # d : date sous format 'AAAA-MM-JJ HH:MM:SS'
 def maximum(liste): # Les listes utilisées contiennent soit des nombres, soit des couples de nombre
     ind_max = 0
     maxi = 0 
-    # print(liste)
     if type(liste[0]) == list :
         for element in liste :
-            # print(element,'ys')
             if element[0] != None :
-                if maxi < element[0] :
+                if maxi <= element[0] :
                     ind_max = element[1]
                     maxi = element[0]
     else :
         for a in range(len(liste)):
             if liste[a] != None :
-                if maxi < liste[a] :
+                if maxi <= liste[a] :
                     ind_max = a
                     maxi = liste[a]
-    # print([maxi,ind_max])
     return [int(maxi*10000/10000),ind_max]
 
 def minimum(liste):
@@ -327,16 +307,21 @@ def minimum(liste):
     if type(liste[0]) == list :
         for element in liste :
             if element[0] != None :
-                if mini > element[0] :
+                if mini >= element[0] :
                     ind_min = element[1]
                     mini = element[0]
     else :
         for i in range(len(liste)):
             if liste[i] != None:
-                if mini > liste[i]:
+                if mini >= liste[i]:
                     ind_min = i
                     mini = liste[i]
     return [int(mini*10000)/10000,ind_min]
+
+def etendue(liste):
+    maxi = maximum(liste)[0]
+    mini = minimum(liste)[0]
+    return (int((maxi-mini)*10000)/10000)
 
 def mediane(liste):
     n = len(liste)
@@ -352,52 +337,76 @@ def count_None(liste):
             count_n += 1
     return (int(count_n*10000)/10000)
 
-def somme(liste,bol):
+
+def somme(liste,bol,bol_log):
     somme1,somme2 = 0,0
-    for element in liste:
-        if element != None :
-            somme1 += element 
-            somme2 += element ** 2
-    if bol==True:
+    if bol_log : 
+        for element in liste :
+            if element != None :
+                somme1 += 10**(element/20)
+                somme2 += (10**(element/20))**2
+    else :
+        for element in liste:
+            if element != None :
+                somme1 += element 
+                somme2 += element ** 2
+    if bol :
         return (int(somme1*10000)/10000)
     else:
         return (int(somme2*10000)/10000)
 
-def moyenne(liste):
-    addition = somme(liste,True)
-    return (int((addition/(len(liste)-count_None(liste)))*10000)/10000)
+def moyenne(liste,bol_log):
+    if bol_log :
+        addition = somme(liste,True,bol_log)
+        return (int(20*mt.log10(addition/(len(liste)-count_None(liste)))*10000)/10000)
+    else :
+        addition = somme(liste,True,bol_log)
+        return (int((addition/(len(liste)-count_None(liste)))*10000)/10000)
 
-def etendue(liste):
-    maxi = maximum(liste)[0]
-    mini = minimum(liste)[0]
-    return (int((maxi-mini)*10000)/10000)
+def variance(liste,bol_log):
+    moy = moyenne(liste,bol_log)
+    if bol_log :
+        addition = somme(liste,False,bol_log)
+        return(int((20*mt.log10(addition/(len(liste)-count_None(liste))) - moy**2)*10000)/10000)
+    else : 
+        addition = somme(liste,False,bol_log)
+        return (int((addition/(len(liste)-count_None(liste)) - moy**2)*10000)/10000)
 
-def variance(liste):
-    moy = moyenne(liste)
-    addition = somme(liste,False)
-    return (int((addition/(len(liste)-count_None(liste)) - moy**2)*10000)/10000)
+def ecart_type(liste,bol_log):
+    return (int((abs(variance(liste,bol_log))**(1/2))*10000)/10000)      
 
-def ecart_type(liste):
-    return (int((variance(liste)**(1/2))*10000)/10000)      
-
-def covariance(L1,L2):
+def covariance(L1,L2,bol_log,bol_emplacement):
     T1 = []
     T2 = []
     for i in range(len(L1)) :
         if L1[i] != None and L2[i] != None :
             T1.append(L1[i])
             T2.append(L2[i])
-    moy1= moyenne(T1)
-    moy2= moyenne(T2)
+    if bol_log :
+        if bol_emplacement :
+            moy1= moyenne(T1,True)
+            moy2= moyenne(T2,False)   
+        else :
+            moy1= moyenne(T1,False)
+            moy2= moyenne(T2,True)            
+    else :    
+        moy1= moyenne(T1,bol_log)
+        moy2= moyenne(T2,bol_log)
     S=0
     for i in range(len(T1)):
         S += (T1[i]-moy1)*(T2[i]-moy2)
     return (int(S/len(T1)*10000)/10000)
 
-def indice_correlation(L1,L2):
+def indice_correlation(L1,L2,bol_log,bol_emplacement):
     if len(L1)!=len(L2) :
         return("Prendre un autre intervalle de temps")
-    indice = covariance(L1,L2)/(ecart_type(L1)*ecart_type(L2))
+    if bol_log :
+        if bol_emplacement :    
+            indice = covariance(L1,L2,True,True)/(ecart_type(L1,True)*ecart_type(L2,False))
+        else :
+            indice = covariance(L1,L2,True,False)/(ecart_type(L1,False)*ecart_type(L2,True))
+    else :
+        indice = covariance(L1,L2,False,False)/(ecart_type(L1,False)*ecart_type(L2,False))
     return (int(indice*10000)/10000)
 
 # ANALYSE PHYSIQUE 
@@ -412,7 +421,7 @@ def humidex(T,phi) :
     temp_rosee = (phi/100)**(1/8)*(112 + 0.9 * T) + 0.1 * T - 112
     return( T + 0.5555 * (6.11 * mt.exp(5417.7530 * (1 / 273.16 - 1 / (273.15 + temp_rosee))) - 10))
 
-# Graphique
+# Fonctions Graphiques
 
 def fusion_str(string,nombre):
     return(string + ' : ' + str(int(nombre*10000)/10000))
@@ -439,17 +448,53 @@ def lab(bol_tous,donnee):
     lab = liste_cap[0][donnee][1]
     return lab
 
+def occupation(bol_intervalle,date1,date2,bol_tps):
+    if bol_intervalle :
+        liste_date = date_intervalle(date1,date2)
+        liste = liste_intervalle(date1, date2, [0,1,2,3,4,5], [0,1,2,3,4,5], liste_date, False).copy()
+    else :
+        liste_date = cap_date[5].copy()
+        liste = liste_cap.copy()
+    occup = [[],[]]
+    for i in range(len(liste_date)):
+        if bol_tps :
+            occup[0].append(liste_date[i][0])
+        else :
+            occup[0].append(liste[6][-1][2][i])
+        if i != len(liste_date)-1 and i != 0 :
+            if liste[6][0][2][i] <= 35.5 and (liste[6][0][2][i+1] < 35.5 or liste[6][0][2][i-1] < 35.5) :
+                occup[1].append(0)
+            else :
+                occup[1].append(1)
+        else :
+            if liste[6][0][2][i] <= 35.5 :
+                occup[1].append(0)
+            else :
+                occup[1].append(1)
+    return(occup) 
+
 def graph(nb_cap,bol_corr,nb_donnee,bol_intervalle,date1,date2,bol_init_moy,bol_stats,bol_diff,liste_etude_cap,liste_etude_donnee,cap_date_inter) :
     if bol_intervalle :
         liste=liste_intervalle(date1,date2,liste_etude_cap,liste_etude_donnee,cap_date_inter,bol_init_moy).copy()
     else :
         liste=liste_cap.copy()
+    if bol_corr :
+        for i in range(len(liste_etude_donnee)):
+            if liste_etude_donnee[i] == 0 :
+                bol_log = True
+                if i == 0 :
+                    bol_emplacement = True
+                elif i == 1 :
+                    bol_emplacement = False
+            else :
+                bol_log = False
+                bol_emplacement = False
     for id_donnee in liste_etude_donnee : 
         liste_max = []
         liste_min = []
         if nb_cap == 2 :
             if bol_corr :
-                ind_corr = indice_correlation(liste[liste_etude_cap[0]][id_donnee][2],liste[liste_etude_cap[1]][id_donnee][2])
+                ind_corr = indice_correlation(liste[liste_etude_cap[0]][id_donnee][2],liste[liste_etude_cap[1]][id_donnee][2],bol_log,bol_emplacement)
         for idd in liste_etude_cap :
             plt.plot(liste[idd][-1][2],liste[idd][id_donnee][2], color = liste_color[idd], label = liste[idd][id_donnee][0] + " " + str(idd+1))
             M = maximum(liste[idd][id_donnee][2])
@@ -519,11 +564,20 @@ def graph_corr(nb_cap,bol_corr,nb_donnee,bol_intervalle,date1,date2,bol_init_moy
         liste=liste_intervalle(date1,date2,liste_etude_cap,liste_etude_donnee,cap_date_inter,bol_init_moy).copy()
     else :
         liste=liste_cap.copy()
+    for i in range(len(liste_etude_donnee)):
+        if liste_etude_donnee[i] == 0 :
+            bol_log = True
+            if i == 0 :
+                bol_emplacement = True
+            elif i == 1 :
+                bol_emplacement = False
+        else :
+            bol_log = False
+            bol_emplacement = False
     for cap in liste_etude_cap : 
         liste_max = []
         liste_min = []
-        print((liste[cap]))
-        ind_corr = indice_correlation(liste[cap][liste_etude_donnee[0]][2],liste[cap][liste_etude_donnee[1]][2])
+        ind_corr = indice_correlation(liste[cap][liste_etude_donnee[0]][2],liste[cap][liste_etude_donnee[1]][2],bol_log,bol_emplacement)
         for id_donnee in liste_etude_donnee :
             plt.plot(liste[cap][-1][2],liste[cap][id_donnee][2], color = liste_color[id_donnee], label = liste[cap][id_donnee][0] + " " + str(cap+1))
             M = maximum(liste[cap][id_donnee][2])
@@ -581,7 +635,7 @@ tps_moy = []
 
 """ Enregistrement des données dans les listes en vue de faire apparaître les différentes données et diagrammes """
 
-with open("EIVP_KM correction.csv","r") as mesures : # Ouverture du fichier csv
+with open("EIVP_KM.csv","r") as mesures : # Ouverture du fichier csv
     mesures.readline() # Saut de la première ligne
     ligne = saut_first_col(mesures.readline()) # Affectation de la première ligne
     i = 2 # Initialisation du compteur de ligne
