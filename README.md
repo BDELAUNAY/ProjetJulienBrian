@@ -3,7 +3,7 @@ Bienvenue sur le projet python du 1er Semestre de la promo 62, de Julien Cotisso
 
 *** A LIRE ABSOLUMENT :
 
-Le compte rendu est le pdf : EXPLICATION PROJET PYTHON
+Le compte rendu est le pdf : EXPLICATION PROJET PYTHON.
 Le fichier python finale est le fichier : Projet_Julien_Brian_Groupe_B_V12
 
 Tout deux visibles ci-dessus.
