@@ -5,26 +5,6 @@ import matplotlib.pyplot as plt
 import math as mt
 # import matplotlib.patches as pt
 
-# A faire
-
-""" Continuer la moyenne (check), analyser comment utiliser le bol_init_moy (Check )"""
-""" Mettre les différents éléments : moyenne, max, min, médiane, variance, écart type, étendue...(Check)"""
-""" Remplacer le groupe bloc n= 52 ... par une boucle sur les 4 tailles pour que ce soit plus opti (Check)"""
-""" Moyenne a faire sur les dernière valeur et sur les valeurs médianes (sans le 5e capteur) (check)"""
-""" Modifier graph() pour qu'elle utilise soit la liste complète ou la liste intervalle en créant une liste qui copie celle à utiliser entre les deux (check)"""
-""" Fonction exécuter qui balance tout (check)"""
-""" Modifier graph (check)"""
-""" Ajouter les stats """
-""" Print l'indice de corrélation (check)"""
-""" Affiner l'affichage et finir pour tous les cas(check)"""
-""" Fusionner graph int et cap (check)"""
-""" Tableau des valeurs (check)"""
-""" Assurer la continuité avec les ordres possibles (check)"""
-""" EN GROS FAIRE LA FONCTION START() et c'est fini !!!!!!!!!! (check)"""
-""" Mettre des None si l'intervalle prend dans les mauvais temps (check)"""
-""" Graph occupation (check)"""
-""" ERREURS A METTRE (check)"""
-
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 def start():
@@ -742,4 +722,3 @@ tps_moy = tps.copy()
 liste_donnee_moy.append(tps_moy)
 for k in range (len(liste_donnee_moy)) :
     liste_cap[-1][k].append(liste_donnee_moy[k])
-
